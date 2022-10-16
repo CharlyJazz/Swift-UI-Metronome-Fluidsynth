@@ -12,6 +12,7 @@
 
 #include <stdio.h>
 
-void start_metronome(const char *sount_font_path);
+void start_metronome(const char *sount_font_path, unsigned int bpm);
+void finish_metronome();
 
 #endif /* metronome_system_h */

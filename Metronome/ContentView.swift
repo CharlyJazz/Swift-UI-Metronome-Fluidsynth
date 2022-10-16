@@ -7,22 +7,6 @@
 
 import SwiftUI
 
-struct FormSlider: View {
-    @State private var sliderValue: Double = 120
-    
-    var body: some View {
-        Form {
-            Section() {
-                Slider(
-                    value: $sliderValue,
-                    in: 10...250,
-                    step: 1
-                )
-            }.frame(width: 300)
-        }
-    }
-}
-
 // Remove the file:// from the URL because
 // fluidsynth does not need it
 func getSoundFontURL(filename: String) -> String {
@@ -34,23 +18,41 @@ func getSoundFontURL(filename: String) -> String {
 struct ContentView: View {
     @State var running: Bool = false
     @State var buttonText: String = "Start"
-
+    @State private var sliderValue: Double = 120
+    
     var body: some View {
         VStack(alignment: .center) {
             Button(buttonText, action: {
                 if (running == true) {
                     running = false
                     buttonText = "Start"
+                    finish_metronome()
                 } else {
                     running = true
                     buttonText = "Stop"
-                    start_metronome(getSoundFontURL(filename: "S90ES"))
+                    start_metronome(getSoundFontURL(filename: "S90ES"), UInt32(sliderValue))
                 }
             }).buttonStyle(DefaultButtonStyle())
             Divider()
             HStack(alignment: .center) {
-                Text("Beats per second").padding()
-                FormSlider()
+                Text(String(sliderValue)).padding()
+                Form {
+                    Section() {
+                        Slider(
+                            value: $sliderValue,
+                            in: 10...250,
+                            step: 1,
+                            onEditingChanged: { data in
+                                if (running == true) {
+                                    finish_metronome()
+                                }
+                                running = true
+                                buttonText = "Stop"
+                                start_metronome(getSoundFontURL(filename: "S90ES"), UInt32(sliderValue))
+                            }
+                        )
+                    }.frame(width: 300)
+                }
             }
         }
     }

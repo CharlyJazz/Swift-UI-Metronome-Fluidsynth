@@ -15,7 +15,9 @@ struct MetronomeApp: App {
             ContentView().frame(
                 width: 500,
                 height: 500
-            );
+            ).onDisappear {
+                finish_metronome()
+            }
         }
     }
 }
